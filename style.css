@@ -1,0 +1,894 @@
+/* Reset */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    /* Screenshot shows a very clean, white page */
+    background-color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    /* Matches CAS style */
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+    /* Push content down a bit like the screenshot */
+    color: #333;
+}
+
+#main-lockup {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.hku-logo {
+    max-width: 300px;
+    height: auto;
+}
+
+/* Header Text */
+.cas-header {
+    color: #0073e6;
+    /* Approximate the CAS Blue */
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Instruction Text */
+.cas-instruction {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #000;
+}
+
+/* Form Styling */
+#login-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 350px;
+    /* Confined width for inputs */
+    gap: 15px;
+    /* Gap between inputs */
+}
+
+/* Inputs */
+.cas-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    border-radius: 4px;
+    /* Slight rounded corners */
+    outline: none;
+    color: #555;
+    background-color: #fff;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.cas-input:focus {
+    border-color: #66afe9;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+}
+
+/* Placeholder text color */
+.cas-input::placeholder {
+    color: #999;
+}
+
+/* Blue Button */
+.cas-button {
+    width: 100%;
+    background-color: #007bff;
+    /* Bright Blue */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cas-button:hover {
+    background-color: #0069d9;
+}
+
+/* Utility */
+.hidden {
+    display: none !important;
+}
+
+/* Setup Screen */
+#setup-screen {
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* Setup Screen Specifics */
+.portal-header {
+    text-align: center;
+    border-bottom: 2px solid #0073e6;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.user-info-bar {
+    text-align: right;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 14px;
+}
+
+.setup-container {
+    width: 800px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    background-color: #fafafa;
+    border-radius: 4px;
+}
+
+.section h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-bar label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.search-bar input {
+    padding: 6px;
+    width: 250px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* Data Tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+    background-color: #fff;
+}
+
+.data-table th,
+.data-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.data-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+/* Buttons inside Setup */
+.action-btn {
+    padding: 6px 12px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 3px;
+}
+
+.action-btn:hover {
+    background-color: #ddd;
+}
+
+.primary-btn {
+    padding: 10px 20px;
+    background-color: #0073e6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.primary-btn:hover {
+    background-color: #005bb5;
+}
+
+.delete-btn {
+    background-color: #fff;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+    padding: 2px 8px;
+}
+
+.delete-btn:hover {
+    background-color: #ffe6e6;
+}
+
+.confirm-row {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.feedback-msg {
+    font-style: italic;
+    color: #666;
+}
+
+/* ================= MAIN MENU SCREEN (VINTAGE STYLE) ================= */
+#main-menu-screen {
+    font-family: "Times New Roman", Times, serif;
+    color: #000;
+    margin-top: 20px;
+    background-color: white;
+    border: none;
+    width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Container inside */
+.main-menu-container {
+    text-align: center;
+    width: 100%;
+}
+
+.main-title {
+    font-size: 20px;
+    /* Increased back slightly */
+    font-weight: bold;
+    margin-bottom: 5px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.sub-title {
+    font-size: 16px;
+    /* Increased */
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 25px;
+    font-style: normal;
+    text-align: center;
+}
+
+.menu-header {
+    font-size: 20px;
+    /* Increased */
+    text-decoration: underline;
+    margin-bottom: 25px;
+    font-weight: normal;
+    text-align: center;
+}
+
+.transaction-info {
+    font-weight: bold;
+    font-size: 15px;
+    /* Increased */
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.red-text {
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.motto {
+    color: #009900;
+    font-weight: bold;
+    margin-bottom: 25px;
+    font-size: 15px;
+    /* Increased */
+    text-align: center;
+}
+
+.account-info {
+    margin-bottom: 25px;
+    font-size: 15px;
+    /* Increased */
+    text-align: center;
+}
+
+/* Menu Buttons Area */
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 650px;
+    margin: 0 auto;
+}
+
+.menu-btn {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to bottom, #f0f0f0 0%, #dcdcdc 100%);
+    border: 1px solid #707070;
+    padding: 3px 12px;
+    /* Slightly larger padding */
+    font-size: 13.5px;
+    /* Slightly larger font */
+    cursor: pointer;
+    border-radius: 2px;
+    color: #000;
+    box-shadow: 1px 1px 0px white inset;
+    text-align: center;
+}
+
+.menu-btn:hover {
+    background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
+}
+
+.menu-btn:active {
+    background: #ccc;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Special Widths */
+.password-btn {
+    width: 320px;
+    height: 28px;
+}
+
+.full-width-btn {
+    width: 300px;
+    /* Slightly wider than text "Perform Add/Drop..." */
+    height: 28px;
+}
+
+.vacancy-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin: 8px 0;
+}
+
+.vacancy-row label {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 15px;
+}
+
+.vacancy-row input {
+    border: 1px solid #707070;
+    padding: 2px;
+    width: 120px;
+    height: 24px;
+    font-size: 13px;
+}
+
+/* ================= ADD/DROP SCREEN ================= */
+#add-drop-screen {
+    font-family: "Times New Roman", Times, serif;
+    width: 950px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+}
+
+.add-drop-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.timetable-grid {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 12px;
+    table-layout: fixed;
+}
+
+.timetable-grid th,
+.timetable-grid td {
+    border: 1px solid #999;
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.timetable-grid th {
+    background-color: white;
+    font-weight: bold;
+}
+
+.timetable-cell-content {
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+.course-list-section {
+    margin-bottom: 30px;
+}
+
+.course-list-title {
+    font-weight: bold;
+    text-decoration: underline;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.enrolled-course-list {
+    list-style: none;
+    padding: 0;
+    font-size: 14px;
+    margin-left: 20px;
+}
+
+.enrolled-course-list li {
+    margin-bottom: 4px;
+}
+
+/* Add/Drop Form Table */
+.add-drop-form-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #666;
+    /* Outer thick border */
+    margin-bottom: 10px;
+}
+
+.add-drop-form-table th,
+.add-drop-form-table td {
+    border: 1px solid #666;
+    padding: 5px;
+    text-align: center;
+}
+
+.add-drop-form-table th {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.add-drop-section-header {
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
+/* Removed pink-border as requested */
+
+/* Removed pink-border as requested */
+
+/* Center align form inputs */
+.form-input {
+    width: 90%;
+    border: 1px solid #999;
+    padding: 2px;
+    text-align: center;
+    /* Centered as requested */
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.form-actions button {
+    margin: 0 5px;
+    padding: 2px 10px;
+    background: #e0e0e0;
+    border: 1px solid #999;
+    cursor: pointer;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+/* ================= PREVIEW SCREEN ================= */
+.preview-header {
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+    margin: 20px 0 10px 0;
+    font-size: 16px;
+}
+
+.bg-drop {
+    background-color: red !important;
+    color: black;
+}
+
+.bg-add {
+    background-color: #8fbc8f !important;
+    /* Olive green */
+    color: black;
+}
+
+.preview-actions {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.preview-warning {
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.yes-no-btn {
+    font-size: 12px;
+    padding: 2px 8px;
+    margin: 0 5px;
+    cursor: pointer;
+    background: #e0e0e0;
+    border: 1px solid #999;
+}
+
+/* ================= PROCESSING SCREEN ================= */
+#processing-screen {
+    font-family: "Times New Roman", Times, serif;
+    width: 800px;
+    margin: 50px auto;
+    text-align: center;
+    background: white;
+}
+
+.processing-msg {
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+.processing-details {
+    font-weight: bold;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.processing-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.processing-btn {
+    width: 250px;
+    height: 25px;
+    background: #e0e0e0;
+    border: 1px solid #999;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* ================= STUDENT TIMETABLE SCREEN ================= */
+#student-timetable-screen {
+    font-family: Arial, Helvetica, sans-serif;
+    /* Screenshot looks sans-serif for the table headers */
+    width: 950px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+}
+
+.st-header {
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    /* Large title */
+    margin-bottom: 5px;
+}
+
+.st-sub-header {
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.st-info-box {
+    border: 1px solid #999;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: space-between;
+}
+
+.st-course-list {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.st-course-list th {
+    text-align: left;
+    text-decoration: underline;
+    padding-bottom: 5px;
+}
+
+.st-course-list td {
+    padding: 2px 5px;
+    vertical-align: top;
+}
+
+.st-footer-note {
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    margin-top: 10px;
+}
+
+.st-important-box {
+    border: 1px solid #999;
+    padding: 5px;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    margin-top: 20px;
+}
+
+/* ================= HISTORY SCREEN ================= */
+#history-screen {
+    font-family: "Times New Roman", Times, serif;
+    width: 900px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.history-table th,
+.history-table td {
+    border: 1px solid #000;
+    padding: 5px;
+    font-size: 13px;
+    font-family: "Times New Roman", Times, serif;
+    text-align: center;
+}
+
+/* New Highlights as requested */
+.bg-drop-new {
+    background-color: #ffcccc;
+    /* Light red background */
+    color: red;
+    text-decoration: line-through;
+    position: relative;
+    font-size: 11px;
+}
+
+.bg-add-new {
+    background-color: #e0ffff;
+    /* Light cyan/blue */
+    color: blue;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+/* Conflict handling: If we need to show both in one cell, we can stack them */
+.cell-conflict-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+.conflict-item {
+    border-bottom: 1px dashed #999;
+}
+
+.conflict-item:last-child {
+    border-bottom: none;
+}
+
+/* ================= VACANCY CHECK MODAL/AREA ================= */
+#vacancy-result-screen {
+    font-family: Arial, sans-serif;
+    width: 600px;
+    margin: 50px auto;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.vacancy-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.vacancy-table th,
+.vacancy-table td {
+    border: 1px solid #999;
+    padding: 5px;
+    text-align: center;
+    font-size: 13px;
+}
+
+/* ================= FORGOT PASSWORD EASTER EGG ================= */
+#forgot-pw-screen {
+    /* Similar to login screen but with specific fields */
+    text-align: center;
+    padding-top: 100px;
+}
+
+#meme-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black url('image/dwh_redeyes.png') no-repeat center center;
+    background-size: cover;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 50px;
+    color: white;
+    font-family: "Microsoft YaHei", sans-serif;
+}
+
+.meme-avatar-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: visible;
+    margin-bottom: 20px;
+}
+
+.meme-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid red;
+    box-shadow: 0 0 20px red;
+    animation: breathe 2s infinite alternate;
+}
+
+@keyframes breathe {
+    from {
+        box-shadow: 0 0 10px red;
+        transform: scale(1);
+    }
+
+    to {
+        box-shadow: 0 0 30px red;
+        transform: scale(1.05);
+    }
+}
+
+.meme-question {
+    font-size: 32px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px #000;
+    margin-bottom: 30px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+}
+
+.meme-actions button {
+    font-size: 24px;
+    padding: 10px 30px;
+    margin: 0 20px;
+    cursor: pointer;
+    border: 2px solid white;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transition: all 0.2s;
+}
+
+.meme-actions button:hover {
+    background: white;
+    color: black;
+}
+
+.comic-bubble {
+    position: absolute;
+    background: white;
+    color: black;
+    padding: 15px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    top: 220px;
+    /* Below avatar */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    text-align: center;
+    border: 2px solid black;
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.5);
+}
+
+.comic-bubble::after {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}
+
+.flash-msg {
+    position: absolute;
+    font-size: 40px;
+    color: red;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px white;
+    animation: flashInfo 0.5s ease-out forwards;
+}
+
+@keyframes flashInfo {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.5) rotate(-10deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0;
+    }
+}
+
+.back-login-btn {
+    margin-top: 50px;
+    font-size: 20px;
+    padding: 10px 20px;
+    background: #00ff00;
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}

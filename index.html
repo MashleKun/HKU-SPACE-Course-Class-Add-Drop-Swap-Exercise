@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKU SPACE Add/Drop Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="main-lockup">
+        <div class="logo-container">
+            <img src="image/HKUSPACE_logo.png" alt="HKU SPACE Logo" class="hku-logo">
+        </div>
+
+        <h2 class="cas-header">HKU SPACE Course/Class Add/Drop/Swap Exercise</h2>
+
+        <p class="cas-instruction">To re-verify your identity, please enter your student number and password below.</p>
+
+        <div id="login-form-container">
+            <input type="text" id="student-id" class="cas-input" placeholder="Student ID">
+            <input type="password" id="password" class="cas-input" placeholder="Password">
+            <button id="login-btn" class="cas-button" onclick="window.handleLogin()">Login</button>
+            <div style="text-align: left; margin-top: 5px;">
+                <span class="forgot-pw-link" onclick="window.goToForgotPw()"
+                    style="font-size: 10px; color: #ccc; cursor: pointer;">Forgot Password?</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Setup Screen -->
+    <div id="setup-screen" class="screen hidden">
+        <h2 class="portal-header">Initialize Your Current Timetable</h2>
+        <div class="user-info-bar">
+            Student: <span id="display-student-id"></span>
+        </div>
+
+        <div class="setup-container">
+            <div class="section search-section">
+                <h3>1. Search for Courses</h3>
+                <div class="search-bar">
+                    <label>Course Code:</label>
+                    <input type="text" id="course-search-input" placeholder="e.g. CCEN4004">
+                    <button id="search-btn" class="action-btn" onclick="window.searchCourses()">Search</button>
+                </div>
+                <div id="search-results-area">
+                    <table id="results-table" class="data-table hidden">
+                        <thead>
+                            <tr>
+                                <th>Class No</th>
+                                <th>Course Name</th>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Room</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-tbody"></tbody>
+                    </table>
+                    <p id="search-feedback" class="feedback-msg"></p>
+                </div>
+            </div>
+
+            <div class="section my-timetable-section">
+                <h3>2. My Current Timetable</h3>
+                <table id="my-timetable-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Class</th>
+                            <th>Name</th>
+                            <th>Day / Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-timetable-tbody"></tbody>
+                </table>
+                <p id="timetable-feedback" class="feedback-msg">No courses added yet.</p>
+
+                <div class="confirm-row">
+                    <button id="confirm-setup-btn" class="primary-btn" onclick="window.confirmSetup()">Confirm & Enter
+                        System</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Menu Screen -->
+    <div id="main-menu-screen" class="screen hidden">
+        <div class="main-menu-container">
+            <h1 class="main-title">HKU SPACE<br>COMMUNITY COLLEGE</h1>
+            <h2 class="sub-title">ONLINE COURSE/CLASS ADD/DROP/SWAP EXERCISE - SEMESTER 2, 2025-26</h2>
+
+            <h2 class="menu-header">Main Menu</h2>
+
+            <p class="transaction-info">
+                You are allowed a total of <span id="transactions-left" class="red-text">15</span> add/drop/swap
+                transaction(s) for this semester.
+            </p>
+
+            <p class="motto">~ Enjoy your college life whatever the results of add/drop/swap ~</p>
+
+            <p class="account-info">
+                STUDENT NAME ( <span id="menu-student-id"></span> ). Please select the following options :
+            </p>
+
+            <div class="menu-options">
+                <button class="menu-btn password-btn" onclick="window.goToChangePassword()">Change Password in Add/Drop
+                    System</button>
+
+                <div class="vacancy-row">
+                    <label>Course Code: (e.g. CCBS4008):</label>
+                    <input type="text" id="vacancy-code-input">
+                    <button class="menu-btn" onclick="window.checkVacancy()">Check Class Vacancy</button>
+                </div>
+
+                <button class="menu-btn full-width-btn" id="perform-add-drop-btn"
+                    onclick="window.goToAddDropScreen()">Perform Add/Drop in the Current Semester</button>
+                <button class="menu-btn full-width-btn" onclick="window.goToHistoryScreen()">View Add/Drop
+                    History</button>
+                <button class="menu-btn full-width-btn" onclick="window.goToStudentTimetable()">View and Print
+                    Timetable</button>
+                <button class="menu-btn full-width-btn" id="logout-btn" onclick="window.handleLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vacancy Result Screen -->
+    <div id="vacancy-result-screen" class="screen hidden"
+        style="padding: 20px; max-width: 800px; margin: 0 auto; background: white;">
+        <h1 class="main-title">HKU SPACE<br>COMMUNITY COLLEGE</h1>
+        <h2 class="sub-title">ONLINE COURSE/CLASS ADD/DROP/SWAP EXERCISE - SEMESTER 2, 2025-26</h2>
+
+        <div style="text-align: left; margin: 20px 0;">
+            <h3 style="color: green; text-decoration: underline; margin-bottom: 10px;">IMPORTANT</h3>
+            <ul style="color: green; font-size: 14px; line-height: 1.6; padding-left: 20px; text-align: left;">
+                <li style="margin-bottom: 10px;">The real time vacancy of each class will be available on the web during
+                    the add/drop/swap period.</li>
+                <li style="margin-bottom: 10px;">Your request for change might not be successful as the place might have
+                    been taken up by your classmates who are making the same request as yours.</li>
+                <li style="margin-bottom: 10px;">The College has made every effort to honour your course preference made
+                    in the Course Selection Exercise. As resources are limited, please understand that not every
+                    add/drop/swap request can be catered for.</li>
+            </ul>
+        </div>
+
+        <h3 style="margin-top: 20px; font-weight: bold; font-size: 18px; text-align: left;">Course Name : <span
+                id="vacancy-course-name"></span></h3>
+
+        <table class="vacancy-table"
+            style="width: 100%; border: 1px solid #999; margin-top: 10px; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f0f0f0;">
+                    <th style="border: 1px solid #999; padding: 5px; text-align: left;">Class</th>
+                    <th style="border: 1px solid #999; padding: 5px; text-align: left;">Room</th>
+                    <th style="border: 1px solid #999; padding: 5px; text-align: left;">(Weekday) Time</th>
+                    <th style="border: 1px solid #999; padding: 5px; text-align: left;">Vacancy</th>
+                </tr>
+            </thead>
+            <tbody id="vacancy-tbody"></tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="window.switchScreen('main-menu')">Go back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- Add/Drop Screen -->
+    <div id="add-drop-screen" class="screen hidden">
+        <div class="add-drop-header">
+            <h1 class="main-title">HKU SPACE<br>COMMUNITY COLLEGE</h1>
+            <h2 class="sub-title">ONLINE COURSE/CLASS ADD/DROP/SWAP EXERCISE (ADD/DROP COURSES) SEMESTER 2, 2025-26</h2>
+            <p>STUDENT NAME ( <span id="ad-student-id"></span> ) :</p>
+            <p style="font-size: 13px; margin: 10px 0;">Please enter the course codes and class numbers that you wish to
+                add/drop in the box(es) below. You should refer to your programme structure in the Student Handbook and
+                make sure that you fulfill the curricular and course requirements (especially those who have repeat and
+                additional courses).</p>
+            <p class="transaction-info" style="margin-top: 20px;">
+                You are allowed a total of <span id="ad-transactions-left" class="red-text"></span> add/drop/swap
+                transaction(s) for this semester.
+            </p>
+        </div>
+
+        <h3 class="add-drop-section-header">Current Timetable (Semester 2)</h3>
+        <table class="timetable-grid" id="semester-timetable">
+            <thead>
+                <tr>
+                    <th style="width: 15%;"></th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </thead>
+            <tbody id="timetable-grid-body"></tbody>
+        </table>
+
+        <div class="course-list-section">
+            <h3 class="course-list-title">The following are the courses you have enrolled for the 2nd Semester, 2015-16
+                :</h3>
+            <ul id="enrolled-course-list" class="enrolled-course-list"></ul>
+        </div>
+
+        <p style="font-weight: bold; text-align: center; margin-bottom: 5px;">Please enter the following information if
+            you wish to add/drop courses/classes.</p>
+        <table class="add-drop-form-table">
+            <thead>
+                <tr>
+                    <th style="width: 2%;">No.</th>
+                    <th style="width: 5%;"></th>
+                    <th style="width: 40%;">DROP<br><span style="font-weight: normal;">(Course Code - e.g.
+                            CCBS4008)</span></th>
+                    <th style="width: 50%;">ADD<br><span style="font-weight: normal;">(Course Code & Class
+                            Number)<br>(e.g. CCBS4008 - CL06)</span></th>
+                </tr>
+            </thead>
+            <tbody id="add-drop-inputs-body">
+                <tr>
+                    <td>1</td>
+                    <td></td>
+                    <td><input type="text" class="form-input drop-input"></td>
+                    <td><input type="text" class="form-input add-code-input" style="width: 40%; margin-right: 5px;"> -
+                        <input type="text" class="form-input add-class-input" style="width: 30%;"></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td></td>
+                    <td><input type="text" class="form-input drop-input"></td>
+                    <td><input type="text" class="form-input add-code-input" style="width: 40%; margin-right: 5px;"> -
+                        <input type="text" class="form-input add-class-input" style="width: 30%;"></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td></td>
+                    <td><input type="text" class="form-input drop-input"></td>
+                    <td><input type="text" class="form-input add-code-input" style="width: 40%; margin-right: 5px;"> -
+                        <input type="text" class="form-input add-class-input" style="width: 30%;"></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td></td>
+                    <td><input type="text" class="form-input drop-input"></td>
+                    <td><input type="text" class="form-input add-code-input" style="width: 40%; margin-right: 5px;"> -
+                        <input type="text" class="form-input add-class-input" style="width: 30%;"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-actions">
+            <button onclick="window.handleSubmit()">Submit</button>
+            <button onclick="document.querySelectorAll('.form-input').forEach(i => i.value = '')">Reset</button>
+        </div>
+    </div>
+
+    <!-- Preview Screen (Refactored to Single Grid) -->
+    <div id="preview-screen" class="screen hidden">
+        <h3 class="preview-header">Preview Changes</h3>
+        <p class="preview-warning" style="margin-bottom: 5px;">Red = Dropped, Blue = Added</p>
+
+        <table class="timetable-grid" style="width: 950px; margin: 0 auto; margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th style="width: 15%;"></th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </thead>
+            <tbody id="preview-timetable-body"></tbody>
+        </table>
+
+        <p class="preview-warning">As many other students are filing in their request at the same time, the information
+            shown above may not be up-to-date. Please make your decision as soon as possible.</p>
+
+        <div id="first-confirm-area" class="preview-actions">
+            <p class="preview-warning">Are you sure you want to change?</p>
+            <button class="yes-no-btn" onclick="window.requestSecondConfirm()">YES</button>
+            <button class="yes-no-btn" onclick="window.cancelPreview()">NO</button>
+        </div>
+
+        <div id="second-confirm-area" class="preview-actions hidden">
+            <p class="preview-warning" style="color: red; font-size: 14px;">This is your last chance!!<br>You cannot
+                revert the course/class once you have confirmed the change. Are you sure?</p>
+            <button class="yes-no-btn" onclick="window.confirmChanges()">Yes</button>
+            <button class="yes-no-btn" onclick="window.cancelPreview()">No</button>
+        </div>
+    </div>
+
+    <!-- Processing / Result Screen -->
+    <div id="processing-screen" class="screen hidden">
+        <h1 class="main-title">HKU SPACE<br>COMMUNITY COLLEGE</h1>
+        <h2 class="sub-title">ONLINE COURSE/CLASS ADD/DROP/SWAP EXERCISE - SEMESTER 2, 2025-26</h2>
+
+        <p class="processing-msg">Your request(s) below is/are being processed.</p>
+
+        <div id="processing-feedback" class="processing-details"></div>
+
+        <p class="processing-msg">Please click 'Print Student Timetable' to check if your request(s) is/are reflected in
+            your timetable.</p>
+        <p class="processing-msg">If the change(s) is/are not displayed in your timetable, please click 'Perform
+            Add/Drop in the Current Semester' and try again.</p>
+
+        <div class="processing-actions">
+            <p style="font-weight: bold; margin-bottom: 10px;">Please select ...</p>
+            <button class="processing-btn" onclick="window.goToStudentTimetable()">Print Student Timetable</button>
+            <button class="processing-btn" onclick="window.goToAddDropScreen()">Continue to Perform Add/Drop</button>
+            <button class="processing-btn" onclick="window.switchScreen('main-menu')">Go Back to Main Menu</button>
+            <button class="processing-btn" onclick="window.handleLogout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Student Timetable Screen (Print) -->
+    <div id="student-timetable-screen" class="screen hidden">
+        <h1 class="st-header">HKU SPACE Community College</h1>
+        <h2 class="st-sub-header">Student Timetable</h2>
+
+        <div class="st-info-box">
+            <div>
+                <strong>STUDENT NAME</strong><br><br>
+                <strong>Student No.</strong> <span id="st-student-id"></span>
+            </div>
+            <div>
+                <strong>Issue Date : </strong> <span id="issue-date"></span><br><br>
+                Associate Degree<br>
+                Campus: Kowloon East Campus
+            </div>
+        </div>
+
+        <div style="font-weight: bold; font-size: 12px; margin-bottom: 10px;">The following are the courses you have
+            enrolled for the 2nd semester of 2015-16 academic year:</div>
+
+        <table class="st-course-list" id="st-course-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Course Code</th>
+                    <th style="width: 40%;">Full Course Title</th>
+                    <th style="width: 45%;">Room</th>
+                </tr>
+            </thead>
+            <tbody id="st-course-tbody"></tbody>
+        </table>
+
+        <div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">2nd Semester</div>
+        <table class="timetable-grid">
+            <thead>
+                <tr>
+                    <th style="width: 15%;"></th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+            </thead>
+            <tbody id="st-timetable-body"></tbody>
+        </table>
+
+        <!-- Semester 1 (Hardcoded placeholder) -->
+        <div style="font-weight: bold; font-size: 12px; margin: 20px 0 5px 0;">The following are the courses you have
+            enrolled for the 1st semester of 2015-16 academic year:</div>
+        <div style="font-size: 11px; font-family: Arial;">
+            (Semester 1 records omitted for simulation)
+        </div>
+
+        <p class="st-footer-note"><strong>*Note:</strong> KEC-rooms are located at 28 Wang Hoi Road, Kowloon Bay,
+            Kowloon</p>
+
+        <div class="st-important-box">
+            <strong>Important:</strong><br>
+            It is your responsibility to ensure the fulfillment of course and curricular requirements of your enrolled
+            programme...
+        </div>
+
+        <div class="form-actions" style="margin-top: 30px;">
+            <button onclick="window.print()">Print Timetable</button>
+            <button onclick="window.switchScreen('main-menu')">Back to Main Menu</button>
+        </div>
+    </div>
+
+    <!-- History Screen -->
+    <div id="history-screen" class="screen hidden">
+        <h1 class="main-title">HKU SPACE<br>COMMUNITY COLLEGE</h1>
+        <h2 class="sub-title">ONLINE COURSE/CLASS ADD/DROP/SWAP EXERCISE</h2>
+
+        <div style="text-align: center; font-weight: bold; margin-bottom: 20px;">
+            Number of add/drop/swap performed : <span id="history-count">0</span>
+        </div>
+
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Type</th>
+                    <th>Course Dropped<br>(Course Code - Class Code)</th>
+                    <th>Course Added<br>(Course Code - Class Code)</th>
+                    <th>Reference Number</th>
+                    <th>Transaction Time</th>
+                </tr>
+            </thead>
+            <tbody id="history-tbody"></tbody>
+        </table>
+
+        <button onclick="window.switchScreen('main-menu')">Go back to main menu</button>
+    </div>
+
+    <!-- Forgot Password / Meme Screen -->
+    <div id="forgot-pw-screen" class="screen hidden">
+        <h2 class="cas-header" style="color: black;">Recover Password</h2>
+        <div id="login-form-container"
+            style="background:#eee; padding:20px; border:1px solid #ccc; display:inline-block;">
+            <input type="text" id="forgot-username" class="cas-input" placeholder="Username (Student ID)">
+            <input type="password" id="forgot-new-pw" class="cas-input" placeholder="New Password">
+            <input type="password" id="forgot-confirm-pw" class="cas-input" placeholder="Confirm New Password">
+            <button class="cas-button" onclick="window.triggerMeme()">Change Password</button>
+        </div>
+    </div>
+
+    <div id="meme-screen" class="hidden">
+        <div class="meme-avatar-container">
+            <img src="image/dwh_redeyes.png" class="meme-avatar" alt="Avatar">
+            <div id="meme-bubble" class="comic-bubble hidden">可以xd，你的密码改好了</div>
+        </div>
+        <p class="meme-question">他是你的好朋友吗？</p>
+
+        <div class="meme-actions">
+            <button onclick="window.clickYes()">是</button>
+            <button onclick="window.clickNo()">不是</button>
+        </div>
+
+        <button id="meme-back-btn" class="back-login-btn hidden" onclick="window.handleLogout()">返回 Login
+            Screen</button>
+    </div>
+
+    <script src="courses.js"></script>
+    <script>
+        // Global Variables
+        let currentCourses = [];
+        let allCoursesData = [];
+        let currentStudentId = null;
+        let pendingCourses = [];
+        let currentDropsForPreview = [];
+        let currentAddsForPreview = [];
+
+        let pendingDrops = [];
+        let pendingAdds = [];
+        let transactionCount = 15;
+        let historyLog = [];
+
+        let pendingReset = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof allCourses !== 'undefined') {
+                allCoursesData = allCourses;
+            } else {
+                alert("Critical Error: courses.js not loaded.");
+            }
+
+            // Check session
+            const storedId = localStorage.getItem('lastSessionId');
+            const storedScreen = localStorage.getItem('lastScreen');
+            if (storedId) {
+                document.getElementById('student-id').value = storedId;
+                const storedPw = localStorage.getItem(`pw_${storedId}`);
+                if (storedPw) document.getElementById('password').value = storedPw;
+
+                if (storedScreen && storedScreen !== 'login' && storedScreen !== 'meme') {
+                    currentStudentId = storedId;
+                    loadUserData(storedId);
+                    window.switchScreen(storedScreen);
+                }
+            }
+
+            document.getElementById('issue-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        });
+
+        function loadUserData(id) {
+            const savedCourses = localStorage.getItem(`currentCourses_${id}`);
+            currentCourses = savedCourses ? JSON.parse(savedCourses) : [];
+            const savedCount = localStorage.getItem(`txCount_${id}`);
+            transactionCount = savedCount ? parseInt(savedCount) : 15;
+            const savedHistory = localStorage.getItem(`history_${id}`);
+            historyLog = savedHistory ? JSON.parse(savedHistory) : [];
+
+            document.getElementById('display-student-id').textContent = id;
+        }
+
+        window.handleLogin = function () {
+            const idInput = document.getElementById('student-id');
+            const pwInput = document.getElementById('password');
+            const val = idInput.value.trim();
+            const pw = pwInput.value;
+
+            if (!val) { alert("Please enter Student ID"); return; }
+
+            // Password logic: First time = register
+            const existingPw = localStorage.getItem(`pw_${val}`);
+            if (!existingPw) {
+                if (!pw) { alert("Please set a password for first login (Registration)."); return; }
+                localStorage.setItem(`pw_${val}`, pw.trim());
+            } else {
+                if (pw.trim() !== existingPw) { alert("Invalid Password"); return; }
+            }
+
+            currentStudentId = val;
+            localStorage.setItem('lastSessionId', val);
+            loadUserData(val);
+
+            window.switchScreen('setup');
+            window.renderMyTimetable();
+        };
+
+        window.handleLogout = function () {
+            localStorage.removeItem('lastSessionId');
+            localStorage.removeItem('lastScreen');
+            location.reload();
+        };
+
+        window.switchScreen = function (screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById('main-lockup').classList.add('hidden');
+            document.getElementById('meme-screen').classList.add('hidden');
+
+            if (screenName === 'meme') {
+                document.getElementById('meme-screen').classList.remove('hidden');
+                return;
+            }
+
+            const map = {
+                'login': 'main-lockup',
+                'setup': 'setup-screen',
+                'main-menu': 'main-menu-screen',
+                'add-drop': 'add-drop-screen',
+                'preview': 'preview-screen',
+                'processing': 'processing-screen',
+                'student-timetable': 'student-timetable-screen',
+                'history': 'history-screen',
+                'forgot-pw': 'forgot-pw-screen',
+                'vacancy-result': 'vacancy-result-screen',
+                // Compatibility for legacy stored states (e.g. if user is stuck in old state)
+                'vacancy-result-screen': 'vacancy-result-screen'
+            };
+
+            if (map[screenName]) {
+                document.getElementById(map[screenName]).classList.remove('hidden');
+            } else {
+                // Flash fallback
+                console.warn("Unknown screen:", screenName, "falling back.");
+                if (currentStudentId) {
+                    document.getElementById('main-menu-screen').classList.remove('hidden');
+                    screenName = 'main-menu';
+                    // Update storage so next refresh works
+                    localStorage.setItem('lastScreen', 'main-menu');
+                } else {
+                    document.getElementById('main-lockup').classList.remove('hidden');
+                }
+            }
+
+            if (currentStudentId && screenName !== 'meme') {
+                localStorage.setItem('lastScreen', screenName);
+            }
+
+            if (screenName === 'main-menu') {
+                document.getElementById('transactions-left').textContent = transactionCount;
+                document.getElementById('menu-student-id').textContent = currentStudentId;
+            }
+        };
+
+        // SETUP & SEARCH
+        window.searchCourses = function () {
+            const query = document.getElementById('course-search-input').value.trim().toUpperCase();
+            if (!query) return;
+            const tbody = document.getElementById('results-tbody');
+            tbody.innerHTML = '';
+            document.getElementById('results-table').classList.remove('hidden');
+            const matches = allCoursesData.filter(c => c.code === query);
+            const displayed = new Set();
+            matches.forEach(c => {
+                const key = `${c.code}-${c.classNo}`;
+                if (displayed.has(key)) return;
+                displayed.add(key);
+                const loops = matches.filter(m => m.classNo === c.classNo);
+                let timeText = loops.map(l => `${l.day} ${l.start}-${l.end}`).join('<br>');
+                const isAdded = currentCourses.some(added => added.code === c.code && added.classNo === c.classNo);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${c.classNo}</td><td>${c.name}</td><td>${c.day}</td><td>${timeText}</td><td>${c.room}</td>
+                    <td>${isAdded ? '<b>Added</b>' : `<button class="action-btn" onclick="window.addToTimetable('${c.code}', '${c.classNo}')">Add</button>`}</td>`;
+                tbody.appendChild(tr);
+            });
+        };
+        window.addToTimetable = function (code, classNo) {
+            const segments = allCoursesData.filter(c => c.code === code && c.classNo === classNo);
+            if (segments.length === 0) return;
+            const idx = currentCourses.findIndex(c => c.code === code);
+            if (idx >= 0) {
+                if (!confirm(`Replace ${currentCourses[idx].classNo} with ${classNo}?`)) return;
+                currentCourses = currentCourses.filter(c => c.code !== code);
+            }
+            currentCourses.push(...segments);
+            window.saveState();
+            window.renderMyTimetable();
+            window.searchCourses();
+        };
+        window.removeFromTimetable = function (code) {
+            currentCourses = currentCourses.filter(c => c.code !== code);
+            window.saveState();
+            window.renderMyTimetable();
+        };
+        window.renderMyTimetable = function () {
+            const tbody = document.getElementById('my-timetable-tbody');
+            tbody.innerHTML = '';
+            const unique = getUniqueCourses(currentCourses);
+            if (unique.length === 0) document.getElementById('timetable-feedback').style.display = 'block';
+            else {
+                document.getElementById('timetable-feedback').style.display = 'none';
+                unique.forEach(c => {
+                    const loops = currentCourses.filter(l => l.code === c.code && l.classNo === c.classNo);
+                    const timeText = loops.map(l => `${l.day} ${l.start}-${l.end}`).join(', ');
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${c.code}</td><td>${c.classNo}</td><td>${c.name}</td><td>${timeText}</td>
+                    <td><button onclick="window.removeFromTimetable('${c.code}')">Remove</button></td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+        };
+        window.confirmSetup = function () {
+            if (currentCourses.length === 0) { alert("Please add courses."); return; }
+            window.switchScreen('main-menu');
+        };
+
+        // NAVIGATION
+        window.goToAddDropScreen = function () {
+            document.getElementById('ad-student-id').textContent = currentStudentId;
+            document.getElementById('ad-transactions-left').textContent = transactionCount;
+            document.querySelectorAll('.form-input').forEach(i => i.value = '');
+            window.renderAddDropScreen();
+            window.switchScreen('add-drop');
+        };
+        window.goToStudentTimetable = function () {
+            document.getElementById('st-student-id').textContent = currentStudentId;
+            const tbody = document.getElementById('st-course-tbody');
+            tbody.innerHTML = '';
+            const unique = getUniqueCourses(currentCourses);
+            unique.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${c.code}-${c.classNo}</td><td>${c.name}</td><td>${c.room || 'TBA'}</td>`;
+                tbody.appendChild(tr);
+            });
+            renderTimetableGrid(currentCourses, 'st-timetable-body');
+            window.switchScreen('student-timetable');
+        };
+        window.goToHistoryScreen = function () {
+            document.getElementById('history-count').textContent = historyLog.length;
+            const tbody = document.getElementById('history-tbody');
+            tbody.innerHTML = '';
+            historyLog.forEach((h, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${i + 1}</td><td>${h.type}</td><td>${h.drop}</td><td>${h.add}</td><td>${h.ref}</td><td>${h.time}</td>`;
+                tbody.appendChild(tr);
+            });
+            window.switchScreen('history');
+        };
+        window.goToForgotPw = function () { window.switchScreen('forgot-pw'); };
+        window.goToChangePassword = function () { window.switchScreen('forgot-pw'); };
+
+        // VACANCY
+        window.checkVacancy = function () {
+            const code = document.getElementById('vacancy-code-input').value.trim().toUpperCase();
+            if (!code) return;
+
+            const matches = allCoursesData.filter(c => c.code === code);
+            const displayed = new Set();
+            const classes = [];
+            matches.forEach(m => {
+                if (!displayed.has(m.classNo)) {
+                    displayed.add(m.classNo);
+                    classes.push(m);
+                }
+            });
+
+            if (classes.length === 0) { alert("Course not found"); return; }
+
+            document.getElementById('vacancy-course-name').textContent = code + " - " + classes[0].name;
+            const tbody = document.getElementById('vacancy-tbody');
+            tbody.innerHTML = '';
+
+            const oneIndex = Math.floor(Math.random() * classes.length);
+
+            classes.forEach((c, idx) => {
+                let vac = 1;
+                if (idx !== oneIndex) {
+                    vac = Math.floor(Math.random() * 5) + 1;
+                }
+                const loops = matches.filter(m => m.classNo === c.classNo);
+                const timeText = loops.map(l => `(${l.day.substring(0, 3)}) ${l.start}-${l.end}`).join('<br>');
+
+                const tr = document.createElement('tr');
+                const tdClass = document.createElement('td');
+                const tdRoom = document.createElement('td');
+                const tdTime = document.createElement('td');
+                const tdVac = document.createElement('td');
+
+                tdClass.style.border = '1px solid #999'; tdClass.style.padding = '5px'; tdClass.textContent = c.classNo;
+                tdRoom.style.border = '1px solid #999'; tdRoom.style.padding = '5px'; tdRoom.textContent = c.room;
+                tdTime.style.border = '1px solid #999'; tdTime.style.padding = '5px'; tdTime.innerHTML = timeText;
+                tdVac.style.border = '1px solid #999'; tdVac.style.padding = '5px'; tdVac.textContent = vac;
+
+                tr.appendChild(tdClass);
+                tr.appendChild(tdRoom);
+                tr.appendChild(tdTime);
+                tr.appendChild(tdVac);
+
+                tbody.appendChild(tr);
+            });
+
+            window.switchScreen('vacancy-result');
+        };
+
+        // EASTER EGG LOGIC
+        window.triggerMeme = function () {
+            const user = document.getElementById('forgot-username').value.trim();
+            const newPw = document.getElementById('forgot-new-pw').value.trim();
+            const confPw = document.getElementById('forgot-confirm-pw').value.trim();
+
+            if (!user || !newPw || !confPw) { alert("Please fill all fields"); return; }
+            if (newPw !== confPw) { alert("Passwords do not match"); return; }
+
+            // Store for pending update (do NOT update yet)
+            pendingReset = { user, pw: newPw };
+
+            window.switchScreen('meme');
+        };
+
+        window.clickYes = function () {
+            // Commit change
+            if (pendingReset) {
+                localStorage.setItem(`pw_${pendingReset.user}`, pendingReset.pw);
+                pendingReset = null; // Clear
+            }
+
+            document.getElementById('meme-bubble').classList.remove('hidden');
+            document.getElementById('meme-back-btn').classList.remove('hidden');
+        };
+
+        window.clickNo = function () {
+            const msg = document.createElement('div');
+            msg.className = 'flash-msg';
+            msg.textContent = "nmd针对我！";
+            msg.style.left = Math.random() * 80 + "%";
+            msg.style.top = Math.random() * 80 + "%";
+            document.getElementById('meme-screen').appendChild(msg);
+            setTimeout(() => msg.remove(), 600);
+        };
+
+
+        // ADD/DROP LOGIC (Same as before)
+        window.renderAddDropScreen = function () {
+            renderTimetableGrid(currentCourses, 'timetable-grid-body', [], []);
+            const listEl = document.getElementById('enrolled-course-list');
+            listEl.innerHTML = '';
+            const unique = getUniqueCourses(currentCourses);
+            unique.forEach(c => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${c.code}-${c.classNo}</strong> &nbsp;&nbsp; ${c.name}`;
+                listEl.appendChild(li);
+            });
+        };
+
+        function getCourseAbbr(name) {
+            return name.split(' ').filter(w => /^[A-Z0-9]/.test(w)).map(w => w[0]).join('');
+        }
+        function getUniqueCourses(list) {
+            const unique = [];
+            list.forEach(c => { if (!unique.find(u => u.code === c.code)) unique.push(c); });
+            return unique;
+        }
+
+        // Updated Render: Unified Preview
+        function renderTimetableGrid(baseCourses, elementId, drops = [], adds = []) {
+            const gridBody = document.getElementById(elementId);
+            gridBody.innerHTML = '';
+            const timeSlots = ["08:30-10:00", "10:00-11:30", "11:30-13:00", "13:00-14:30", "14:30-16:00", "16:00-17:30", "17:30-19:00"];
+            const daysMap = { "MON": 0, "TUE": 1, "WED": 2, "THU": 3, "FRI": 4, "SAT": 5 };
+
+            timeSlots.forEach(slot => {
+                const tr = document.createElement('tr');
+                const tdTime = document.createElement('td');
+                tdTime.textContent = slot;
+                tr.appendChild(tdTime);
+
+                const [sStart] = slot.split('-');
+
+                for (let i = 0; i < 6; i++) {
+                    const td = document.createElement('td');
+                    td.className = 'timetable-cell';
+
+                    const existingInSlot = baseCourses.filter(c => {
+                        const d = c.day.toUpperCase().substring(0, 3);
+                        return daysMap[d] === i && c.start === sStart;
+                    });
+
+                    const addedInSlot = adds.filter(c => {
+                        const d = c.day.toUpperCase().substring(0, 3);
+                        return daysMap[d] === i && c.start === sStart;
+                    });
+
+                    let contentHTML = "";
+
+                    existingInSlot.forEach(c => {
+                        const isDropped = drops.includes(c.code);
+                        const styleClass = isDropped ? 'bg-drop-new' : ''; // Normal or dropped
+                        contentHTML += `<div class="timetable-cell-content ${styleClass} conflict-item">
+                            ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>${c.room}
+                        </div>`;
+                    });
+
+                    addedInSlot.forEach(c => {
+                        contentHTML += `<div class="timetable-cell-content bg-add-new conflict-item">
+                            ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>${c.room}
+                        </div>`;
+                    });
+
+                    if (existingInSlot.length > 0 || addedInSlot.length > 0) {
+                        td.innerHTML = `<div class="cell-conflict-container">${contentHTML}</div>`;
+                    }
+                    tr.appendChild(td);
+                }
+                gridBody.appendChild(tr);
+            });
+        }
+
+        window.handleSubmit = function () {
+            const dropInputs = document.querySelectorAll('.drop-input');
+            const addCodes = document.querySelectorAll('.add-code-input');
+            const addClasses = document.querySelectorAll('.add-class-input');
+
+            pendingDrops = [];
+            pendingAdds = [];
+
+            dropInputs.forEach(i => { if (i.value.trim()) pendingDrops.push(i.value.trim().toUpperCase()); });
+
+            currentAddsForPreview = []; // New Course Objects
+            for (let i = 0; i < addCodes.length; i++) {
+                const c = addCodes[i].value.trim().toUpperCase();
+                const cl = addClasses[i].value.trim().toUpperCase();
+                if (c && cl) {
+                    const segs = allCoursesData.filter(data => data.code === c && data.classNo === cl);
+                    if (segs.length > 0) currentAddsForPreview.push(...segs);
+                    pendingAdds.push({ code: c, classNo: cl });
+                }
+            }
+            if (pendingDrops.length === 0 && pendingAdds.length === 0) return;
+
+            renderTimetableGrid(currentCourses, 'preview-timetable-body', pendingDrops, currentAddsForPreview);
+
+            document.getElementById('first-confirm-area').classList.remove('hidden');
+            document.getElementById('second-confirm-area').classList.add('hidden');
+            window.switchScreen('preview');
+        };
+
+        window.requestSecondConfirm = function () {
+            document.getElementById('first-confirm-area').classList.add('hidden');
+            document.getElementById('second-confirm-area').classList.remove('hidden');
+        };
+
+        window.confirmChanges = function () {
+            let nextCourses = [...currentCourses];
+            nextCourses = nextCourses.filter(c => !pendingDrops.includes(c.code));
+            nextCourses.push(...currentAddsForPreview);
+            currentCourses = nextCourses;
+
+            const count = Math.max(pendingDrops.length, pendingAdds.length);
+            transactionCount = Math.max(0, transactionCount - count);
+
+            const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            const refBase = 70000000 + Math.floor(Math.random() * 999999);
+            for (let i = 0; i < count; i++) {
+                let dropText = pendingDrops[i] || "";
+                let addText = pendingAdds[i] ? `${pendingAdds[i].code} - ${pendingAdds[i].classNo}` : "";
+                historyLog.push({ type: "Add/Drop", drop: dropText, add: addText, ref: refBase + i, time: timestamp });
+            }
+
+            let feedback = "Drop " + pendingDrops.join(', ') + " and add " + pendingAdds.map(a => `${a.code}-${a.classNo}`).join(', ');
+            document.getElementById('processing-feedback').textContent = feedback;
+
+            window.saveState();
+            window.switchScreen('processing');
+        };
+
+        window.cancelPreview = function () { window.switchScreen('add-drop'); };
+        window.saveState = function () {
+            if (currentStudentId) {
+                localStorage.setItem(`currentCourses_${currentStudentId}`, JSON.stringify(currentCourses));
+                localStorage.setItem(`txCount_${currentStudentId}`, transactionCount);
+                localStorage.setItem(`history_${currentStudentId}`, JSON.stringify(historyLog));
+            }
+        };
+
+    </script>
+</body>
+
+</html>
