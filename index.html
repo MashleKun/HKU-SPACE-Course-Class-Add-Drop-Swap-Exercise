@@ -251,8 +251,13 @@
         </table>
 
         <div class="form-actions">
-            <button onclick="window.handleSubmit()">Submit</button>
-            <button onclick="document.querySelectorAll('.form-input').forEach(i => i.value = '')">Reset</button>
+            <div>
+                <button onclick="window.handleSubmit()">Submit</button>
+                <button onclick="document.querySelectorAll('.form-input').forEach(i => i.value = '')">Reset</button>
+            </div>
+            <div style="margin-top: 10px;">
+                <button onclick="window.switchScreen('main-menu')">Back to Main Menu</button>
+            </div>
         </div>
     </div>
 
@@ -329,7 +334,7 @@
             <div>
                 <strong>Issue Date : </strong> <span id="issue-date"></span><br><br>
                 Associate Degree<br>
-                Campus: Kowloon East Campus
+                Campus: <span id="st-campus">Kowloon East Campus</span>
             </div>
         </div>
 
@@ -453,7 +458,6 @@
         let pendingAdds = [];
         let transactionCount = 15;
         let historyLog = [];
-
         let pendingReset = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -477,8 +481,6 @@
                     window.switchScreen(storedScreen);
                 }
             }
-
-            document.getElementById('issue-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
         });
 
         function loadUserData(id) {
@@ -500,7 +502,7 @@
 
             if (!val) { alert("Please enter Student ID"); return; }
 
-            // Password logic: First time = register
+            // Password logic
             const existingPw = localStorage.getItem(`pw_${val}`);
             if (!existingPw) {
                 if (!pw) { alert("Please set a password for first login (Registration)."); return; }
@@ -544,19 +546,16 @@
                 'history': 'history-screen',
                 'forgot-pw': 'forgot-pw-screen',
                 'vacancy-result': 'vacancy-result-screen',
-                // Compatibility for legacy stored states (e.g. if user is stuck in old state)
                 'vacancy-result-screen': 'vacancy-result-screen'
             };
 
             if (map[screenName]) {
                 document.getElementById(map[screenName]).classList.remove('hidden');
             } else {
-                // Flash fallback
                 console.warn("Unknown screen:", screenName, "falling back.");
                 if (currentStudentId) {
                     document.getElementById('main-menu-screen').classList.remove('hidden');
                     screenName = 'main-menu';
-                    // Update storage so next refresh works
                     localStorage.setItem('lastScreen', 'main-menu');
                 } else {
                     document.getElementById('main-lockup').classList.remove('hidden');
@@ -570,6 +569,10 @@
             if (screenName === 'main-menu') {
                 document.getElementById('transactions-left').textContent = transactionCount;
                 document.getElementById('menu-student-id').textContent = currentStudentId;
+            }
+
+            if (screenName === 'student-timetable') {
+                document.getElementById('issue-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             }
         };
 
@@ -647,13 +650,24 @@
             document.getElementById('st-student-id').textContent = currentStudentId;
             const tbody = document.getElementById('st-course-tbody');
             tbody.innerHTML = '';
+
+            // Campus Detection
+            let mainCampus = "Kowloon East Campus";
+            for (let c of currentCourses) {
+                if (c.room && c.room.startsWith('IEC')) mainCampus = "Island East Campus";
+                if (c.room && c.room.startsWith('FTC')) mainCampus = "Fortress Tower Campus";
+            }
+            document.getElementById('st-campus').textContent = mainCampus;
+
             const unique = getUniqueCourses(currentCourses);
             unique.forEach(c => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `<td>${c.code}-${c.classNo}</td><td>${c.name}</td><td>${c.room || 'TBA'}</td>`;
                 tbody.appendChild(tr);
             });
-            renderTimetableGrid(currentCourses, 'st-timetable-body');
+            document.getElementById('issue-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            renderTimetableGrid(currentCourses, 'st-timetable-body', [], [], false); // No internal time in print view
             window.switchScreen('student-timetable');
         };
         window.goToHistoryScreen = function () {
@@ -732,19 +746,15 @@
             if (!user || !newPw || !confPw) { alert("Please fill all fields"); return; }
             if (newPw !== confPw) { alert("Passwords do not match"); return; }
 
-            // Store for pending update (do NOT update yet)
             pendingReset = { user, pw: newPw };
-
             window.switchScreen('meme');
         };
 
         window.clickYes = function () {
-            // Commit change
             if (pendingReset) {
                 localStorage.setItem(`pw_${pendingReset.user}`, pendingReset.pw);
-                pendingReset = null; // Clear
+                pendingReset = null;
             }
-
             document.getElementById('meme-bubble').classList.remove('hidden');
             document.getElementById('meme-back-btn').classList.remove('hidden');
         };
@@ -759,10 +769,9 @@
             setTimeout(() => msg.remove(), 600);
         };
 
-
-        // ADD/DROP LOGIC (Same as before)
+        // ADD/DROP LOGIC
         window.renderAddDropScreen = function () {
-            renderTimetableGrid(currentCourses, 'timetable-grid-body', [], []);
+            renderTimetableGrid(currentCourses, 'timetable-grid-body', [], [], false); // Current TT: No internal time
             const listEl = document.getElementById('enrolled-course-list');
             listEl.innerHTML = '';
             const unique = getUniqueCourses(currentCourses);
@@ -782,11 +791,14 @@
             return unique;
         }
 
-        // Updated Render: Unified Preview
-        function renderTimetableGrid(baseCourses, elementId, drops = [], adds = []) {
+        // Updated Render: Unified Preview + Extended Hours + Inner Time Flag
+        function renderTimetableGrid(baseCourses, elementId, drops = [], adds = [], showInnerTime = false) {
             const gridBody = document.getElementById(elementId);
             gridBody.innerHTML = '';
-            const timeSlots = ["08:30-10:00", "10:00-11:30", "11:30-13:00", "13:00-14:30", "14:30-16:00", "16:00-17:30", "17:30-19:00"];
+            const timeSlots = [
+                "08:30-10:00", "10:00-11:30", "11:30-13:00", "13:00-14:30", "14:30-16:00",
+                "16:00-17:30", "17:30-19:00", "19:00-20:30", "20:30-22:00"
+            ];
             const daysMap = { "MON": 0, "TUE": 1, "WED": 2, "THU": 3, "FRI": 4, "SAT": 5 };
 
             timeSlots.forEach(slot => {
@@ -795,7 +807,10 @@
                 tdTime.textContent = slot;
                 tr.appendChild(tdTime);
 
-                const [sStart] = slot.split('-');
+                const [sStart, sEnd] = slot.split('-'); // Get standard slot times
+
+                // Format for inner display: 08:30<br>10:00
+                const innerTimeHTML = `<div class="cell-time-col"><span>${sStart}</span><span>${sEnd}</span></div>`;
 
                 for (let i = 0; i < 6; i++) {
                     const td = document.createElement('td');
@@ -815,15 +830,26 @@
 
                     existingInSlot.forEach(c => {
                         const isDropped = drops.includes(c.code);
-                        const styleClass = isDropped ? 'bg-drop-new' : ''; // Normal or dropped
+                        const styleClass = isDropped ? 'bg-drop-new' : '';
+
+                        const timeCol = showInnerTime ? innerTimeHTML : '';
+
                         contentHTML += `<div class="timetable-cell-content ${styleClass} conflict-item">
-                            ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>${c.room}
+                            ${timeCol}
+                            <div class="cell-info-col">
+                                ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>(${c.room})
+                            </div>
                         </div>`;
                     });
 
                     addedInSlot.forEach(c => {
+                        const timeCol = showInnerTime ? innerTimeHTML : '';
+
                         contentHTML += `<div class="timetable-cell-content bg-add-new conflict-item">
-                            ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>${c.room}
+                            ${timeCol}
+                            <div class="cell-info-col">
+                                ${c.code}-${c.classNo}<br>${getCourseAbbr(c.name)}<br>(${c.room})
+                            </div>
                         </div>`;
                     });
 
@@ -858,12 +884,71 @@
             }
             if (pendingDrops.length === 0 && pendingAdds.length === 0) return;
 
-            renderTimetableGrid(currentCourses, 'preview-timetable-body', pendingDrops, currentAddsForPreview);
+            // --- ADVANCED LOGIC CHECKS ---
+            let tempFinal = currentCourses.filter(c => !pendingDrops.includes(c.code));
+            tempFinal.push(...currentAddsForPreview);
+
+            const conflict = findTimeConflict(tempFinal);
+            if (conflict) {
+                alert(`Time Conflict detected at ${conflict.day} ${conflict.start}!`);
+                return;
+            }
+
+            if (hasConsecutivelimitExceeded(tempFinal)) {
+                alert("Conflict: You cannot have more than 3 consecutive class slots (4.5 hours) on any day.");
+                return;
+            }
+
+            renderTimetableGrid(currentCourses, 'preview-timetable-body', pendingDrops, currentAddsForPreview, true); // Preview: Show inner time
 
             document.getElementById('first-confirm-area').classList.remove('hidden');
             document.getElementById('second-confirm-area').classList.add('hidden');
             window.switchScreen('preview');
         };
+
+        function findTimeConflict(courseList) {
+            const slots = {};
+            for (let c of courseList) {
+                const key = `${c.day}-${c.start}`;
+                if (slots[key]) return c; // Found collision
+                slots[key] = true;
+            }
+            return null;
+        }
+
+        function hasConsecutivelimitExceeded(courseList) {
+            const daysMap = { "MON": 0, "TUE": 1, "WED": 2, "THU": 3, "FRI": 4, "SAT": 5 };
+            const sorted = [...courseList].sort((a, b) => {
+                if (daysMap[a.day.substring(0, 3).toUpperCase()] !== daysMap[b.day.substring(0, 3).toUpperCase()]) {
+                    return daysMap[a.day.substring(0, 3).toUpperCase()] - daysMap[b.day.substring(0, 3).toUpperCase()];
+                }
+                return a.start.localeCompare(b.start);
+            });
+
+            function toMins(t) {
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+            }
+
+            let streak = 1;
+            for (let i = 0; i < sorted.length - 1; i++) {
+                const cur = sorted[i];
+                const next = sorted[i + 1];
+
+                if (cur.day === next.day) {
+                    const diff = toMins(next.start) - toMins(cur.start);
+                    if (diff === 90) { // 90 mins diff = consecutive
+                        streak++;
+                        if (streak > 3) return true;
+                    } else {
+                        streak = 1;
+                    }
+                } else {
+                    streak = 1;
+                }
+            }
+            return false;
+        }
 
         window.requestSecondConfirm = function () {
             document.getElementById('first-confirm-area').classList.add('hidden');
