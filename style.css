@@ -833,7 +833,7 @@ body {
     border-radius: 50%;
     border: 5px solid red;
     box-shadow: 0 0 20px red;
-    animation: breathe 2s infinite alternate;
+    animation: breathe 0.8s infinite alternate;
 }
 
 @keyframes breathe {
