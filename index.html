@@ -435,7 +435,8 @@
     <div id="meme-screen" class="hidden">
         <div class="meme-avatar-container">
             <img src="image/dwh_redeyes.png" class="meme-avatar" alt="Avatar">
-            <div id="meme-bubble" class="comic-bubble hidden">可以xd，你的密码改好了</div>
+            <div id="meme-bubble-left" class="comic-bubble left hidden">哈哈哈不好意思，这个其实只是个模拟网站，站长会向你赎罪</div>
+            <div id="meme-bubble-right" class="comic-bubble right hidden">可以xd，你的密码改好了</div>
         </div>
         <p class="meme-question">他是你的好兄弟吗？</p>
 
@@ -752,10 +753,9 @@
 
             pendingReset = { user, pw: newPw };
 
-            // Immediate Bubble
-            const bubble = document.getElementById('meme-bubble');
-            bubble.textContent = "哈哈哈不好意思，这个其实只是个模拟网站";
-            bubble.classList.remove('hidden');
+            // Left Bubble (Initial)
+            document.getElementById('meme-bubble-left').classList.remove('hidden');
+            document.getElementById('meme-bubble-right').classList.add('hidden'); // Reset
 
             window.switchScreen('meme');
         };
@@ -763,11 +763,12 @@
         window.clickYes = function () {
             if (pendingReset) {
                 localStorage.setItem(`pw_${pendingReset.user}`, pendingReset.pw);
-                pendingReset = null;
+                pendingReset = null; // Clear
             }
-            const bubble = document.getElementById('meme-bubble');
-            bubble.textContent = "可以xd，你的密码改好了";
-            bubble.classList.remove('hidden');
+            // Show Right Bubble (Success)
+            document.getElementById('meme-bubble-right').classList.remove('hidden');
+            // Left bubble remains visible as requested
+
             document.getElementById('meme-back-btn').classList.remove('hidden');
         };
 
