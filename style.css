@@ -20,6 +20,9 @@ body {
 #main-lockup {
     width: 100%;
     max-width: 600px;
+    /* Keep max-width for desktop but allow shrinking */
+    padding: 0 10px;
+    /* Add padding for mobile */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -137,9 +140,12 @@ body {
 }
 
 .setup-container {
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
     margin: 0 auto;
     text-align: left;
+    overflow-x: auto;
+    /* Allow scrolling if content is wide */
 }
 
 .section {
@@ -400,10 +406,13 @@ body {
 /* ================= ADD/DROP SCREEN ================= */
 #add-drop-screen {
     font-family: "Times New Roman", Times, serif;
-    width: 950px;
+    width: 100%;
+    max-width: 950px;
     margin: 20px auto;
     background: white;
-    padding: 20px;
+    padding: 10px;
+    /* Reduced padding for mobile */
+    overflow-x: auto;
 }
 
 .add-drop-header {
@@ -413,6 +422,8 @@ body {
 
 .timetable-grid {
     width: 100%;
+    min-width: 800px;
+    /* Force scroll on mobile */
     border-collapse: collapse;
     margin-bottom: 20px;
     font-size: 12px;
@@ -422,7 +433,8 @@ body {
 .timetable-grid th,
 .timetable-grid td {
     border: 1px solid #999;
-    padding: 4px;
+    padding: 0;
+    /* Remove padding so content fills cell */
     text-align: center;
     vertical-align: middle;
 }
@@ -430,11 +442,20 @@ body {
 .timetable-grid th {
     background-color: white;
     font-weight: bold;
+    padding: 4px;
+    /* Keep padding for headers */
 }
 
 .timetable-cell-content {
     font-size: 11px;
     line-height: 1.2;
+    padding: 4px;
+    /* Internal padding */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .course-list-section {
@@ -559,10 +580,12 @@ body {
 /* ================= PROCESSING SCREEN ================= */
 #processing-screen {
     font-family: "Times New Roman", Times, serif;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
     margin: 50px auto;
     text-align: center;
     background: white;
+    padding: 10px;
 }
 
 .processing-msg {
@@ -690,20 +713,54 @@ body {
 
 /* New Highlights as requested */
 .bg-drop-new {
-    background-color: #ffcccc;
-    /* Light red background */
-    color: red;
+    background-color: #ff4d4d !important;
+    /* Stronger red */
+    color: black !important;
     text-decoration: line-through;
-    position: relative;
-    font-size: 11px;
+    height: 100%;
+    display: flex !important;
 }
 
 .bg-add-new {
-    background-color: #e0ffff;
-    /* Light cyan/blue */
-    color: blue;
+    background-color: #80ffff !important;
+    /* Cyan */
+    color: black !important;
+    height: 100%;
+    display: flex !important;
+}
+
+.timetable-cell-content {
+    height: 100%;
+    min-height: 50px;
+    /* Slightly taller */
+    display: flex;
+    flex-direction: row;
+    /* Row for Time + Info */
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Internal Layout for Time + Info */
+.cell-time-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 6px;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 10px;
+    text-align: left;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    /* Subtle divider */
+    padding-right: 4px;
+    height: 100%;
+}
+
+.cell-info-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* Conflict handling: If we need to show both in one cell, we can stack them */
