@@ -18,11 +18,9 @@ body {
 }
 
 #main-lockup {
-    width: 100%;
-    max-width: 600px;
-    /* Keep max-width for desktop but allow shrinking */
-    padding: 0 10px;
-    /* Add padding for mobile */
+    width: 600px;
+    margin: 0 auto;
+    padding: 20px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -140,12 +138,9 @@ body {
 }
 
 .setup-container {
-    width: 100%;
-    max-width: 800px;
+    width: 800px;
     margin: 0 auto;
     text-align: left;
-    overflow-x: auto;
-    /* Allow scrolling if content is wide */
 }
 
 .section {
@@ -406,13 +401,10 @@ body {
 /* ================= ADD/DROP SCREEN ================= */
 #add-drop-screen {
     font-family: "Times New Roman", Times, serif;
-    width: 100%;
-    max-width: 950px;
+    width: 950px;
     margin: 20px auto;
     background: white;
-    padding: 10px;
-    /* Reduced padding for mobile */
-    overflow-x: auto;
+    padding: 20px;
 }
 
 .add-drop-header {
@@ -422,8 +414,6 @@ body {
 
 .timetable-grid {
     width: 100%;
-    min-width: 800px;
-    /* Force scroll on mobile */
     border-collapse: collapse;
     margin-bottom: 20px;
     font-size: 12px;
@@ -580,12 +570,11 @@ body {
 /* ================= PROCESSING SCREEN ================= */
 #processing-screen {
     font-family: "Times New Roman", Times, serif;
-    width: 100%;
-    max-width: 800px;
+    width: 800px;
     margin: 50px auto;
     text-align: center;
     background: white;
-    padding: 10px;
+    padding: 20px;
 }
 
 .processing-msg {
