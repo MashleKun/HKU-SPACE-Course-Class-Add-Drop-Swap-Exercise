@@ -751,6 +751,12 @@
             if (newPw !== confPw) { alert("Passwords do not match"); return; }
 
             pendingReset = { user, pw: newPw };
+
+            // Immediate Bubble
+            const bubble = document.getElementById('meme-bubble');
+            bubble.textContent = "哈哈哈不好意思，这个其实只是个模拟网站";
+            bubble.classList.remove('hidden');
+
             window.switchScreen('meme');
         };
 
@@ -759,7 +765,9 @@
                 localStorage.setItem(`pw_${pendingReset.user}`, pendingReset.pw);
                 pendingReset = null;
             }
-            document.getElementById('meme-bubble').classList.remove('hidden');
+            const bubble = document.getElementById('meme-bubble');
+            bubble.textContent = "可以xd，你的密码改好了";
+            bubble.classList.remove('hidden');
             document.getElementById('meme-back-btn').classList.remove('hidden');
         };
 
