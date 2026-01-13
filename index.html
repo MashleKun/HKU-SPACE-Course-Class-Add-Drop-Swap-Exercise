@@ -816,18 +816,28 @@
                 // Format for inner display: 08:30<br>10:00
                 const innerTimeHTML = `<div class="cell-time-col"><span>${sStart}</span><span>${sEnd}</span></div>`;
 
+                function getMins(t) { const [h, m] = t.split(':').map(Number); return h * 60 + m; }
+                const slotStartMins = getMins(sStart);
+                const slotEndMins = getMins(sEnd);
+
                 for (let i = 0; i < 6; i++) {
                     const td = document.createElement('td');
                     td.className = 'timetable-cell';
 
                     const existingInSlot = baseCourses.filter(c => {
                         const d = c.day.toUpperCase().substring(0, 3);
-                        return daysMap[d] === i && c.start === sStart;
+                        if (daysMap[d] !== i) return false;
+                        const cStart = getMins(c.start);
+                        const cEnd = getMins(c.end);
+                        return cStart < slotEndMins && cEnd > slotStartMins;
                     });
 
                     const addedInSlot = adds.filter(c => {
                         const d = c.day.toUpperCase().substring(0, 3);
-                        return daysMap[d] === i && c.start === sStart;
+                        if (daysMap[d] !== i) return false;
+                        const cStart = getMins(c.start);
+                        const cEnd = getMins(c.end);
+                        return cStart < slotEndMins && cEnd > slotStartMins;
                     });
 
                     let contentHTML = "";
@@ -996,4 +1006,3 @@
 </body>
 
 </html>
-
