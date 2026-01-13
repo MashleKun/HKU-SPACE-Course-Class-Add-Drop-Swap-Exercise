@@ -833,7 +833,8 @@ body {
     border-radius: 50%;
     border: 5px solid red;
     box-shadow: 0 0 20px red;
-    animation: breathe 0.8s infinite alternate;
+    animation: breathe 0.4s infinite alternate;
+    /* Faster breathing */
 }
 
 @keyframes breathe {
@@ -881,26 +882,55 @@ body {
     border-radius: 20px;
     font-size: 18px;
     font-weight: bold;
-    top: 220px;
-    /* Below avatar */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    top: 50%;
+    /* Center vertically relative to avatar */
+    transform: translateY(-50%);
+    width: 220px;
     text-align: center;
     border: 2px solid black;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.5);
+    z-index: 10000;
 }
 
-.comic-bubble::after {
+.comic-bubble.left {
+    right: 120%;
+    /* Push to left of avatar */
+}
+
+.comic-bubble.right {
+    left: 120%;
+    /* Push to right of avatar */
+}
+
+/* Tails */
+.comic-bubble.left::after {
     content: '';
     position: absolute;
-    top: -20px;
-    left: 50%;
-    margin-left: -10px;
+    top: 50%;
+    right: -20px;
+    /* Point right towards avatar */
     border-width: 10px;
     border-style: solid;
-    border-color: transparent transparent white transparent;
+    border-color: transparent transparent transparent white;
+    transform: translateY(-50%);
 }
+
+.comic-bubble.right::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    /* Point left towards avatar */
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent white transparent transparent;
+    transform: translateY(-50%);
+}
+
+/* Remove old bottom tail */
 
 .flash-msg {
     position: absolute;
