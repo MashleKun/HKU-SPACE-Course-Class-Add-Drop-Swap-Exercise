@@ -80,6 +80,7 @@
                 <p id="timetable-feedback" class="feedback-msg">No courses added yet.</p>
 
                 <div class="confirm-row">
+                    <button class="primary-btn" onclick="window.clearAllCourses()">Delete All</button>
                     <button id="confirm-setup-btn" class="primary-btn" onclick="window.confirmSetup()">Confirm & Enter
                         System</button>
                 </div>
@@ -598,6 +599,13 @@ document.getElementById('main-lockup').classList.add('hidden');
         };
         window.removeFromTimetable = function (code) {
             currentCourses = currentCourses.filter(c => c.code !== code);
+            window.saveState();
+            window.renderMyTimetable();
+        };
+        window.clearAllCourses = function () {
+            if (currentCourses.length === 0) { alert("No courses to delete."); return; }
+            if (!confirm("Are you sure you want to delete all courses?")) return;
+            currentCourses = [];
             window.saveState();
             window.renderMyTimetable();
         };

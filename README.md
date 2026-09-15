@@ -65,4 +65,4 @@ adddrop_simulation/
 
 ## Data Disclaimer
 
-This is a **simulation project** for educational and demonstration purposes only. All course data and vacancy information are randomly generated and do not reflect actual HKU SPACE course offerings.
+This is a **simulation project** for educational and demonstration purposes only. Course data is based on publicly available timetable information and is used to demonstrate the functionality of the system.
