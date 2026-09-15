@@ -770,7 +770,7 @@ document.getElementById('main-lockup').classList.add('hidden');
         };
 
         function getCourseAbbr(name) {
-            return name.split(' ').filter(w => /^[A-Z0-9]/.test(w)).map(w => w[0]).join('');
+            return name.split(' ').filter(w => /^[A-Z0-9]/.test(w)).map(w => (w === w.toUpperCase() && w.length > 1) ? w : w[0]).join('');
         }
         function getUniqueCourses(list) {
             const unique = [];
